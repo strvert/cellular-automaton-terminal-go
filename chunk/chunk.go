@@ -59,7 +59,7 @@ func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
     return neighbors, nil
 }
 
-func (c *Chunk) ClacNextCellState(x, y int) (int, error) {
+func (c *Chunk) CalcNextCellState(x, y int) (int, error) {
     if x >= 64 && y >= 64 && x < 0 && y < 0 {
         return 0, errors.New("out of chunk")
     }
