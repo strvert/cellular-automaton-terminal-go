@@ -9,10 +9,6 @@ type Chunk struct {
     cells [64][8]byte
 }
 
-type Neighborhood struct {
-    Data byte
-}
-
 func calcBitCoord(x, y int) (int, int, byte) {
     px := x / 8
     py := y
@@ -21,7 +17,7 @@ func calcBitCoord(x, y int) (int, int, byte) {
 }
 
 func (c *Chunk) GetCell(x, y int) (int, error) {
-    if x >= 64 && y >= 64 {
+    if x >= 64 && y >= 64 && x < 0 && y < 0 {
         return 0, errors.New("out of chunk")
     }
 
@@ -30,7 +26,7 @@ func (c *Chunk) GetCell(x, y int) (int, error) {
 }
 
 func (c *Chunk) SetCell(x, y, n int) error {
-    if x >= 64 && y >= 64 {
+    if x >= 64 && y >= 64 && x < 0 && y < 0 {
         return errors.New("out of chunk")
     }
 
@@ -44,16 +40,20 @@ func (c *Chunk) SetCell(x, y, n int) error {
     return nil
 }
 
-func (c *Chunk) GetNeigborhood(x, y int) (Neighborhood, error) {
+func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
+    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+        return byte(0), errors.New("out of chunk")
+    }
+
     coords := [][]int{{x, y-1}, {x+1, y-1}, {x+1, y}, {x+1, y+1}, {x, y+1}, {x-1, y+1}, {x-1, y}, {x-1, y-1}}
 
-    var neighbors Neighborhood = Neighborhood{byte(0)}
+    var neighbors byte = byte(0)
     for i, coord := range coords {
         cell, err := c.GetCell(coord[0], coord[1])
         if err != nil {
-            return Neighborhood{0}, err
+            return byte(0), err
         }
-        neighbors.Data = neighbors.Data | byte(cell) << byte(7-i)
+        neighbors = neighbors | byte(cell) << byte(7-i)
     }
     return neighbors, nil
 }

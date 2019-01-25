@@ -16,11 +16,11 @@ import (
 const CELL_STR = "██"
 
 func main() {
-    var b chunk.Chunk
+    var ch chunk.Chunk
 
-    for x := 0; x < 30; x++ {
-        b.SetCell(x, x, 1)
-    }
+    ch.SetCell(0, 0, 1)
+    ch.SetCell(0, 1, 1)
+    ch.SetCell(3, 3, 1)
 
     if err := termbox.Init(); err != nil {
         fmt.Println(err)
@@ -32,12 +32,19 @@ func main() {
     ticker := time.NewTicker(time.Millisecond * 500)
     go func() {
         for range ticker.C {
-            graphic.DrawChunk(&b, CELL_STR)
+            graphic.DrawChunk(&ch, CELL_STR)
+
         }
     }()
 
 MAINLOOP:
     for {
+        neighbors, err := ch.GetNeighborhood(1, 1)
+        if err != nil {
+            fmt.Println(err)
+            break MAINLOOP
+        }
+        graphic.DrawBottomMessage(fmt.Sprintf("%08b", neighbors), 0, 0)
         switch ev := termbox.PollEvent(); ev.Type {
         case termbox.EventKey:
             switch ev.Key {

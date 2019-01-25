@@ -22,7 +22,7 @@ func DrawChunk(c *chunk.Chunk, cellStr string) error {
             }
 
             for _, v := range cellStr {
-                termbox.SetCell(x+offsetX, y, v, cellColor, cellColor)
+                termbox.SetCell(x+offsetX, y, v, cellColor, coldef)
                 offsetX++
             }
             offsetX--
@@ -30,4 +30,12 @@ func DrawChunk(c *chunk.Chunk, cellStr string) error {
     }
     termbox.Flush()
     return nil
+}
+
+func DrawBottomMessage(message string, offsetX, offsetY int) {
+    _, wy := termbox.Size()
+    wy -= 1
+    for i, r := range message {
+        termbox.SetCell(i+offsetX, wy+offsetY, r, termbox.ColorWhite, termbox.ColorDefault)
+    }
 }
