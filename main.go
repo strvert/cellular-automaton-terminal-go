@@ -67,6 +67,7 @@ MAINLOOP:
                 } else if runstate == RUN {
                     ticker.Stop()
                     runstate = STOP
+                    graphic.DrawChunk(&ch, CELL_STR)
                 }
 
             case termbox.KeyArrowUp:
@@ -98,6 +99,8 @@ MAINLOOP:
                 my := ev.MouseY
                 cx := (mx/len([]rune(CELL_STR)))
                 graphic.DrawBottomMessage(fmt.Sprintf("%d, %d     ", cx, my), 1, 0)
+                ch.SetCell(cx, my, 1)
+                graphic.DrawChunk(&ch, CELL_STR)
             }
         }
     }
