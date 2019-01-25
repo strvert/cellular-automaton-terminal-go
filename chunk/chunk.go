@@ -2,6 +2,7 @@ package chunk
 
 import (
     "errors"
+    "math/bits"
 )
 
 
@@ -56,4 +57,26 @@ func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
         neighbors = neighbors | byte(cell) << byte(7-i)
     }
     return neighbors, nil
+}
+
+func (c *Chunk) ClacNextCellState(x, y int) (int, error) {
+    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+        return 0, errors.New("out of chunk")
+    }
+    neighbors, err := c.GetNeighborhood(x, y)
+
+    ncount := bits.OnesCount8(neighbors)
+    curr, _ := c.GetCell(x, y)
+    if curr == 1 {
+        if ncount == 2 || ncount == 3 {
+            return 1, nil
+        } else {
+            return 0, nil
+        }
+    } else {
+        if ncount == 3 {
+            return 1, nil
+        }
+    }
+    return 0, errors.New("Invalid cell state")
 }

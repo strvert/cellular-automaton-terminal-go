@@ -4,7 +4,6 @@ import (
     "fmt"
     "os"
     "time"
-//    "math/bits"
 
     "github.com/nsf/termbox-go"
 
