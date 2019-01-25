@@ -36,9 +36,9 @@ func (c *Chunk) SetCell(x, y, n int) error {
 
     px, py, shift := calcBitCoord(x, y)
     if n == 1 {
-        c.cells[py][px] = c.cells[py][px] | (byte(0x80) >> byte(shift))
+        c.cells[py][px] = c.cells[py][px] | (byte(0x01) << byte(shift))
     } else {
-        c.cells[py][px] = c.cells[py][px] & ^(byte(0x80) >> byte(shift))
+        c.cells[py][px] = c.cells[py][px] & ^(byte(0x01) << byte(shift))
     }
 
     return nil
