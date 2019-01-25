@@ -2,7 +2,9 @@ package main
 
 import (
     "fmt"
-    "github.com/celluar-automaton-terminal-go/chunk"
+    "os"
+    "math/bits"
+    "./chunk"
 )
 
 const BUFSIZE = 1024
@@ -17,8 +19,23 @@ func main() {
 
     for y := 0; y < 64; y++ {
         for x := 0; x < 64; x++ {
-            fmt.Print(b.GetCell(x, y))
+            v, err := b.GetCell(x, y)
+            if err != nil {
+                fmt.Println(err)
+            }
+            if v == 1 {
+                fmt.Print("█")
+            } else {
+                fmt.Print("▓")
+            }
         }
         fmt.Println()
     }
+    neighbor, err := b.GetNeigborhood(1, 1)
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    fmt.Printf("%b\n", neighbor.Data)
+    fmt.Println(bits.OnesCount8(neighbor.Data))
 }
