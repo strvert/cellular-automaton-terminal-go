@@ -16,10 +16,11 @@ const CELL_STR = "██"
 
 func main() {
     var ch chunk.Chunk
+    updateInterval := 500
 
-    ch.SetCell(0, 0, 1)
-    ch.SetCell(0, 1, 1)
-    ch.SetCell(3, 3, 1)
+    for i := 0; i < 10; i++ {
+        ch.SetCell(i+3, 3, 1)
+    }
 
     if err := termbox.Init(); err != nil {
         fmt.Println(err)
@@ -28,31 +29,48 @@ func main() {
     defer termbox.Close()
 
 
-    ticker := time.NewTicker(time.Millisecond * 500)
-    go func() {
+    ticker := time.NewTicker(time.Millisecond * time.Duration(updateInterval))
+    updaterFunc := func() {
         for range ticker.C {
             graphic.DrawChunk(&ch, CELL_STR)
-
-        }
-    }()
-
-MAINLOOP:
-    for {
-        neighbors, err := ch.GetNeighborhood(1, 1)
-        if err != nil {
-            fmt.Println(err)
-            break MAINLOOP
-        }
-        graphic.DrawBottomMessage(fmt.Sprintf("%08b", neighbors), 0, 0)
-        switch ev := termbox.PollEvent(); ev.Type {
-        case termbox.EventKey:
-            switch ev.Key {
-            case termbox.KeyEsc:
-                break MAINLOOP
+            err := ch.UpdateChunk()
+            if err != nil {
+                fmt.Println(err)
             }
         }
     }
 
-    ticker.Stop()
+    go updaterFunc()
+
+MAINLOOP:
+    for {
+        switch ev := termbox.PollEvent(); ev.Type {
+        case termbox.EventKey:
+            switch ev.Key {
+            case termbox.KeyEsc:
+                ticker.Stop()
+                break MAINLOOP
+
+            case termbox.KeyArrowUp:
+                if updateInterval-50 <= 0 {
+                    continue
+                }
+                updateInterval -= 50
+                ticker.Stop()
+                ticker = time.NewTicker(time.Millisecond * time.Duration(updateInterval))
+                go updaterFunc()
+
+            case termbox.KeyArrowDown:
+                if updateInterval+50 <= 0 {
+                    continue
+                }
+                updateInterval += 50
+                ticker.Stop()
+                ticker = time.NewTicker(time.Millisecond * time.Duration(updateInterval))
+                go updaterFunc()
+            }
+        }
+    }
+
     fmt.Println("Stop")
 }

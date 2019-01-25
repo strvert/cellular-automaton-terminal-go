@@ -5,6 +5,7 @@ import (
     "math/bits"
 )
 
+const CHUNK_SIZE = 64
 
 type Chunk struct {
     cells [64][8]byte
@@ -18,7 +19,7 @@ func calcBitCoord(x, y int) (int, int, byte) {
 }
 
 func (c *Chunk) GetCell(x, y int) (int, error) {
-    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+    if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
         return 0, errors.New("out of chunk")
     }
 
@@ -27,7 +28,7 @@ func (c *Chunk) GetCell(x, y int) (int, error) {
 }
 
 func (c *Chunk) SetCell(x, y, n int) error {
-    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+    if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
         return errors.New("out of chunk")
     }
 
@@ -42,31 +43,46 @@ func (c *Chunk) SetCell(x, y, n int) error {
 }
 
 func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
-    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+    if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
         return byte(0), errors.New("out of chunk")
     }
 
     coords := [][]int{{x, y-1}, {x+1, y-1}, {x+1, y}, {x+1, y+1}, {x, y+1}, {x-1, y+1}, {x-1, y}, {x-1, y-1}}
 
     var neighbors byte = byte(0)
+    var cell int = 0
     for i, coord := range coords {
-        cell, err := c.GetCell(coord[0], coord[1])
-        if err != nil {
-            return byte(0), err
+        // SINGLE CHUNK VERSION -----------------------------------------
+        if coord[0] >= CHUNK_SIZE || coord[1] >= CHUNK_SIZE || coord[0] < 0 || coord[1] < 0 {
+            cell = 0
+            neighbors = neighbors | (byte(cell) << byte(7-i))
+        } else {
+            cell, err := c.GetCell(coord[0], coord[1])
+            if err != nil {
+                return byte(0), err
+            }
+            neighbors = neighbors | (byte(cell) << byte(7-i))
         }
-        neighbors = neighbors | byte(cell) << byte(7-i)
+        // --------------------------------------------------------------
     }
     return neighbors, nil
 }
 
 func (c *Chunk) CalcNextCellState(x, y int) (int, error) {
-    if x >= 64 && y >= 64 && x < 0 && y < 0 {
+    if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
         return 0, errors.New("out of chunk")
     }
     neighbors, err := c.GetNeighborhood(x, y)
+    if err != nil {
+        return 0, err
+    }
 
     ncount := bits.OnesCount8(neighbors)
-    curr, _ := c.GetCell(x, y)
+    curr, err := c.GetCell(x, y)
+    if err != nil {
+        return 0, err
+    }
+
     if curr == 1 {
         if ncount == 2 || ncount == 3 {
             return 1, nil
@@ -76,7 +92,27 @@ func (c *Chunk) CalcNextCellState(x, y int) (int, error) {
     } else {
         if ncount == 3 {
             return 1, nil
+        } else {
+            return 0, nil
         }
     }
     return 0, errors.New("Invalid cell state")
+}
+
+func (c *Chunk) UpdateChunk() error {
+    var backChunk Chunk
+    for y := 0; y < CHUNK_SIZE; y++ {
+        for x := 0; x < CHUNK_SIZE; x++ {
+            nextState, err := c.CalcNextCellState(x, y)
+            if err != nil {
+                return err
+            }
+            err = backChunk.SetCell(x, y, nextState)
+            if err != nil {
+                return err
+            }
+        }
+    }
+    c.cells = backChunk.cells
+    return nil
 }
