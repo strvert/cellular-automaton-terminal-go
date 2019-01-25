@@ -2,34 +2,13 @@ package main
 
 import (
     "fmt"
+    "github.com/celluar-automaton-terminal-go/chunk"
 )
 
 const BUFSIZE = 1024
 
-type chunk struct {
-    cells [64][8]byte
-}
-
-func (c *chunk) GetCell(x, y int) int {
-    px := x / 8
-    py := y
-    shift := x % 8
-    return int((c.cells[py][px] >> byte(shift)) & 1)
-}
-
-func (c *chunk) SetCell(x, y, n int) {
-    px := x / 8
-    py := y
-    shift := x % 8
-    if n == 1 {
-        c.cells[py][px] = c.cells[py][px] | (byte(0x80) >> byte(shift))
-    } else {
-        c.cells[py][px] = c.cells[py][px] & ^(byte(0x80) >> byte(shift))
-    }
-}
-
 func main() {
-    var b chunk
+    var b chunk.Chunk
 
     for x := 0; x < 30; x++ {
         b.SetCell(x, 0, 1)
