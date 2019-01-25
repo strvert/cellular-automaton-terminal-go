@@ -23,11 +23,6 @@ func main() {
     var ch chunk.Chunk
     updateInterval := 500
 
-
-    for i := 0; i < 10; i++ {
-        ch.SetCell(i+3, 3, 1)
-    }
-
     if err := termbox.Init(); err != nil {
         fmt.Println(err)
         os.Exit(1)
