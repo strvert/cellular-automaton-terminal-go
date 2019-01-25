@@ -38,4 +38,5 @@ func DrawBottomMessage(message string, offsetX, offsetY int) {
     for i, r := range message {
         termbox.SetCell(i+offsetX, wy+offsetY, r, termbox.ColorWhite, termbox.ColorDefault)
     }
+    termbox.Flush()
 }

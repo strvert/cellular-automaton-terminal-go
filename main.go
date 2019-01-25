@@ -97,8 +97,7 @@ MAINLOOP:
                 mx := ev.MouseX
                 my := ev.MouseY
                 cx := (mx/len([]rune(CELL_STR)))
-                graphic.DrawBottomMessage(fmt.Sprintf("%d, %d", mx, my), 1, 0)
-                graphic.DrawBottomMessage(fmt.Sprintf("%d, %d", cx, my), 1, 0)
+                graphic.DrawBottomMessage(fmt.Sprintf("%d, %d     ", cx, my), 1, 0)
             }
         }
     }
