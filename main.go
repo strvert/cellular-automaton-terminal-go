@@ -9,6 +9,7 @@ import (
 
     "github.com/strvworks/cellular-automaton-terminal-go/chunk"
     "github.com/strvworks/cellular-automaton-terminal-go/graphic"
+    "github.com/strvworks/cellular-automaton-terminal-go/chunkcontroller"
 )
 
 const CELL_STR = "██"
