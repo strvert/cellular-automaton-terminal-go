@@ -24,6 +24,17 @@ func (cc *Chunkcontroller) GetChunk(x, y int) (*chunk.Chunk, error) {
     }
 }
 
+func (cc *Chunkcontroller) GetCell(cx, cy, x, y int) (int, error) {
+    ch, err := cc.GetChunk(cx, cy)
+    if err != nil {
+        return nil, err
+    }
+    cell, err := ch.GetCell(x, y)
+    if err != nil {
+        return nil, err
+    }
+}
+
 func (cc *Chunkcontroller) SetChunk(c *chunk.Chunk, x, y int) {
     cc.Chunkset[[2]int{x, y}] = c
 }
