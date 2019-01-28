@@ -36,6 +36,11 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int) (int, error) {
     return cell, nil
 }
 
+func (cc *Chunkcontroller) CheckChunk(cx, cy int) (bool) {
+    _, ok := cc.Chunkset[[2]int{cx, cy}]
+    return ok
+}
+
 func (cc *Chunkcontroller) SetChunk(c *chunk.Chunk, x, y int) {
     cc.Chunkset[[2]int{x, y}] = c
 }
