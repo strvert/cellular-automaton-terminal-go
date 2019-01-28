@@ -20,7 +20,7 @@ func calcBitCoord(x, y int) (int, int, byte) {
 
 func (c *Chunk) GetCell(x, y int) (int, error) {
     if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
-        return 0, errors.New("out of chunk")
+        return 0, errors.New("That cell is out of chunk")
     }
 
     px, py, shift := calcBitCoord(x, y)
@@ -29,7 +29,7 @@ func (c *Chunk) GetCell(x, y int) (int, error) {
 
 func (c *Chunk) SetCell(x, y, n int) error {
     if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
-        return errors.New("out of chunk")
+        return errors.New("That cell is out of chunk")
     }
 
     px, py, shift := calcBitCoord(x, y)
