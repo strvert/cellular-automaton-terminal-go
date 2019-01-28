@@ -7,7 +7,6 @@ import (
 
     "github.com/nsf/termbox-go"
 
-    "./chunk"
     cctr "./chunkcontroller"
     "./graphic"
 )
@@ -21,16 +20,17 @@ const (
 )
 
 func main() {
-    var ch chunk.Chunk
 
-    var cc *cctr.Chunkcontroller
-    cc = cctr.NewChunkcontroller()
-    cc.SetChunk(&ch, 0, 0)
+    cc := cctr.NewChunkcontroller()
+    cc.NewChunk(0, 0)
     v, err := cc.GetChunk(0, 0)
     if err != nil {
         fmt.Println(err)
+        os.Exit(1)
     }
     fmt.Println(v)
+
+    ch := *v
 
     updateInterval := 500
     if err := termbox.Init(); err != nil {
