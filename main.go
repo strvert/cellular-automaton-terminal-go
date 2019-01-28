@@ -7,9 +7,9 @@ import (
 
     "github.com/nsf/termbox-go"
 
-    "github.com/strvworks/cellular-automaton-terminal-go/chunk"
-    "github.com/strvworks/cellular-automaton-terminal-go/graphic"
-    "github.com/strvworks/cellular-automaton-terminal-go/chunkcontroller"
+    "./chunk"
+    "./graphic"
+    "./chunkcontroller"
 )
 
 const CELL_STR = "██"

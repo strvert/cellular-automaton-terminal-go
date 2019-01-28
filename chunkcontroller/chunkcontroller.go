@@ -3,7 +3,7 @@ package chunkcontroller
 import (
     "errors"
 
-    "github.com/strvworks/cellular-automaton-terminal-go/chunk"
+    "../chunk"
 )
 
 type Chunkcontroller struct {
@@ -12,7 +12,7 @@ type Chunkcontroller struct {
 
 func NewChunkcontroller (*Chunkcontroller) {
     var cc Chunkcontroller
-    cc.Chunkset = {}
+    cc.Chunkset = map[[2]int]*chunk.Chunk{}
     return &cc
 }
 

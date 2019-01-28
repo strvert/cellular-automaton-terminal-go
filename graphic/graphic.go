@@ -2,7 +2,7 @@ package graphic
 
 import (
     "github.com/nsf/termbox-go"
-    "github.com/strvworks/cellular-automaton-terminal-go/chunk"
+    "../chunk"
 )
 
 const coldef = termbox.ColorDefault
