@@ -10,7 +10,7 @@ type Chunkcontroller struct {
     Chunkset map[[2]int]*chunk.Chunk
 }
 
-func NewChunkcontroller (*Chunkcontroller) {
+func NewChunkcontroller() (*Chunkcontroller) {
     var cc Chunkcontroller
     cc.Chunkset = map[[2]int]*chunk.Chunk{}
     return &cc
@@ -24,10 +24,11 @@ func (cc *Chunkcontroller) GetChunk(x, y int) (*chunk.Chunk, error) {
     }
 }
 
-func (cc *Chunkcontroller) SetChunk(c *chunk.Chunk, x, y int) (*chunk.Chunk) {
+func (cc *Chunkcontroller) SetChunk(c *chunk.Chunk, x, y int) {
     cc.Chunkset[[2]int{x, y}] = c
 }
 
-func (cc *Chunkcontroller) NewChunk(x, y int) (*chunk.Chunk) {
-    cc.Chunkset[[2]int{x, y}] = chunk.Chunk
+func (cc *Chunkcontroller) NewChunk(x, y int) {
+    var c chunk.Chunk
+    cc.Chunkset[[2]int{x, y}] = &c
 }
