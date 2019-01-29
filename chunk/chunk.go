@@ -27,13 +27,13 @@ func (c *Chunk) GetCell(x, y int) (int, error) {
     return int((c.cells[py][px] >> byte(shift)) & 1), nil
 }
 
-func (c *Chunk) SetCell(x, y, n int) error {
+func (c *Chunk) SetCell(x, y, v int) error {
     if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
         return errors.New("That cell is out of chunk")
     }
 
     px, py, shift := calcBitCoord(x, y)
-    if n == 1 {
+    if v == 1 {
         c.cells[py][px] = c.cells[py][px] | (byte(0x01) << byte(shift))
     } else {
         c.cells[py][px] = c.cells[py][px] & ^(byte(0x01) << byte(shift))
@@ -52,7 +52,6 @@ func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
     var neighbors byte = byte(0)
     var cell int = 0
     for i, coord := range coords {
-        // SINGLE CHUNK VERSION -----------------------------------------
         if coord[0] >= CHUNK_SIZE || coord[1] >= CHUNK_SIZE || coord[0] < 0 || coord[1] < 0 {
             cell = 0
             neighbors = neighbors | (byte(cell) << byte(7-i))
@@ -63,7 +62,6 @@ func (c *Chunk) GetNeighborhood(x, y int) (byte, error) {
             }
             neighbors = neighbors | (byte(cell) << byte(7-i))
         }
-        // --------------------------------------------------------------
     }
     return neighbors, nil
 }

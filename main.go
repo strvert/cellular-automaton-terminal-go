@@ -46,12 +46,7 @@ func main() {
         for range ticker.C {
             field.W, field.H = termbox.Size()
             field.H -= 5
-            // graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
             graphic.DrawField(cc, field, CELL_STR)
-            // err := ch.UpdateChunk()
-            // if err != nil {
-            //     fmt.Println(err)
-            // }
         }
     }
 
