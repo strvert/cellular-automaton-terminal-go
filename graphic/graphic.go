@@ -7,6 +7,13 @@ import (
 
 const coldef = termbox.ColorDefault
 
+type ScreenField struct {
+    W int
+    H int
+    ChunkOffset [2]int
+    CellOffset [2]int
+}
+
 func DrawChunk(c *chunk.Chunk, cellStr string) error {
     for y := 0; y < 64; y++ {
         offsetX := 0
