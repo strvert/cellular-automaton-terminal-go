@@ -20,18 +20,17 @@ const (
 )
 
 func main() {
-
+    // init setting
     cc := cctr.NewChunkcontroller()
-    cc.NewChunk(0, 0)
-    v, err := cc.GetChunk(0, 0)
-    if err != nil {
-        fmt.Println(err)
-        os.Exit(1)
-    }
-    fmt.Println(v)
+    // v, err := cc.GetChunk(0, 0, false)
+    // if err != nil {
+    //     fmt.Println(err)
+    //     os.Exit(1)
+    // }
 
-    ch := *v
+    // ch := *v
 
+    // draw
     updateInterval := 500
     if err := termbox.Init(); err != nil {
         fmt.Println(err)
@@ -39,19 +38,25 @@ func main() {
     }
     defer termbox.Close()
 
-
+    ox, oy := 10, 15
+    w, h := termbox.Size()
+    field := graphic.ScreenField{w, h, [2]int{0, 0}, [2]int{0, 0}}
     ticker := time.NewTicker(time.Millisecond * time.Duration(updateInterval))
     updaterFunc := func() {
         for range ticker.C {
-            graphic.DrawChunk(&ch, CELL_STR)
-            err := ch.UpdateChunk()
-            if err != nil {
-                fmt.Println(err)
-            }
+            field.W, field.H = termbox.Size()
+            field.H -= 5
+            // graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
+            graphic.DrawField(cc, field, CELL_STR)
+            // err := ch.UpdateChunk()
+            // if err != nil {
+            //     fmt.Println(err)
+            // }
         }
     }
 
-    graphic.DrawChunk(&ch, CELL_STR)
+    graphic.DrawField(cc, field, CELL_STR)
+    //graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
     termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
 
     runstate := STOP
@@ -72,7 +77,8 @@ MAINLOOP:
                 } else if runstate == RUN {
                     ticker.Stop()
                     runstate = STOP
-                    graphic.DrawChunk(&ch, CELL_STR)
+                    graphic.DrawField(cc, field, CELL_STR)
+                    // graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
                 }
 
             case termbox.KeyArrowUp:
@@ -100,12 +106,12 @@ MAINLOOP:
         case termbox.EventMouse:
             switch ev.Key {
             case termbox.MouseLeft:
-                mx := ev.MouseX
-                my := ev.MouseY
+                mx := ev.MouseX - ox
+                my := ev.MouseY - oy
                 cx := (mx/len([]rune(CELL_STR)))
                 graphic.DrawBottomMessage(fmt.Sprintf("%d, %d     ", cx, my), 1, 0)
-                ch.SetCell(cx, my, 1)
-                graphic.DrawChunk(&ch, CELL_STR)
+                graphic.DrawField(cc, field, CELL_STR)
+                // graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
             }
         }
     }

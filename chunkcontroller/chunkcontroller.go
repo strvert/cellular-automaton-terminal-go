@@ -16,16 +16,25 @@ func NewChunkcontroller() (*Chunkcontroller) {
     return &cc
 }
 
-func (cc *Chunkcontroller) GetChunk(x, y int) (*chunk.Chunk, error) {
+func (cc *Chunkcontroller) GetChunk(x, y int, gen bool) (*chunk.Chunk, error) {
     if val, ok := cc.Chunkset[[2]int{x, y}]; ok {
         return val, nil
     } else {
-        return nil, errors.New("That chunk is not found")
+        if gen {
+            cc.NewChunk(x, y)
+            ch, err := cc.GetChunk(x, y, true)
+            if err != nil {
+                return nil, err
+            }
+            return ch, nil
+        } else {
+            return nil, errors.New("That chunk is not found")
+        }
     }
 }
 
 func (cc *Chunkcontroller) GetCell(cx, cy, x, y int) (int, error) {
-    ch, err := cc.GetChunk(cx, cy)
+    ch, err := cc.GetChunk(cx, cy, false)
     if err != nil {
         return 0, err
     }
