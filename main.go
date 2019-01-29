@@ -22,13 +22,26 @@ const (
 func main() {
     // init setting
     cc := cctr.NewChunkcontroller()
-    // v, err := cc.GetChunk(0, 0, false)
-    // if err != nil {
-    //     fmt.Println(err)
-    //     os.Exit(1)
-    // }
+    cc.NewChunk(1, 1)
 
-    // ch := *v
+    cc.SetCell(1, 1, 0, 0, 1, true)
+    bin, err := cc.GetNeighborhood(1, 1, 0, 0)
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Println(fmt.Sprintf("%08b\n", bin))
+
+    cc.SetCell(1, 1, 1, 0, 1, true)
+    cc.SetCell(1, 1, 1, 1, 1, true)
+    cc.SetCell(1, 1, 0, 1, 1, true)
+    cc.SetCell(0, 1, 63, 1, 1, false)
+    cc.SetCell(0, 1, 63, 0, 1, false)
+    cc.SetCell(0, 0, 63, 63, 1, true)
+    bin, err = cc.GetNeighborhood(1, 1, 0, 0)
+    if err != nil {
+        fmt.Println(err)
+    }
+    fmt.Println(fmt.Sprintf("%08b\n", bin))
 
     // draw
     updateInterval := 500
@@ -38,7 +51,6 @@ func main() {
     }
     defer termbox.Close()
 
-    ox, oy := 10, 15
     w, h := termbox.Size()
     field := graphic.ScreenField{w, h, [2]int{0, 0}, [2]int{0, 0}}
     ticker := time.NewTicker(time.Millisecond * time.Duration(updateInterval))
@@ -101,8 +113,8 @@ MAINLOOP:
         case termbox.EventMouse:
             switch ev.Key {
             case termbox.MouseLeft:
-                mx := ev.MouseX - ox
-                my := ev.MouseY - oy
+                mx := ev.MouseX
+                my := ev.MouseY
                 cx := (mx/len([]rune(CELL_STR)))
                 graphic.DrawBottomMessage(fmt.Sprintf("%d, %d     ", cx, my), 1, 0)
                 graphic.DrawField(cc, field, CELL_STR)
