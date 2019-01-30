@@ -31,12 +31,9 @@ func main() {
     }
     fmt.Println(fmt.Sprintf("%08b\n", bin))
 
-    cc.SetCell(1, 1, 1, 0, 1, true)
-    cc.SetCell(1, 1, 1, 1, 1, true)
-    cc.SetCell(1, 1, 0, 1, 1, true)
-    cc.SetCell(0, 1, 63, 1, 1, false)
-    cc.SetCell(0, 1, 63, 0, 1, false)
-    cc.SetCell(0, 0, 63, 63, 1, true)
+    for i := 0; i < 50; i++ {
+        cc.SetCell(0, 0, i, i, 1, true)
+    }
     bin, err = cc.GetNeighborhood(1, 1, 0, 0)
     if err != nil {
         fmt.Println(err)

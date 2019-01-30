@@ -17,14 +17,15 @@ type ScreenField struct {
     CellOffset [2]int
 }
 
-func CalcDrawChunkNum(w, h int) (int, int) {
-    cx := (w / CHUNK_SIZE) + 1
+func CalcDrawChunkNum(w, h int, cellStr string) (int, int) {
+    strlen := len([]rune(cellStr))
+    cx := (w / (CHUNK_SIZE*strlen)) + 1
     cy := (h / CHUNK_SIZE) + 1
     return cx, cy
 }
 
 func DrawField(cc *chunkcontroller.Chunkcontroller, field ScreenField, cellStr string) (int, error) {
-    chnumX, chnumY := CalcDrawChunkNum(field.W, field.H)
+    chnumX, chnumY := CalcDrawChunkNum(field.W, field.H, cellStr)
     choffX := field.ChunkOffset[0]
     choffY := field.ChunkOffset[1]
     ceoffX := field.CellOffset[0]
@@ -36,7 +37,8 @@ func DrawField(cc *chunkcontroller.Chunkcontroller, field ScreenField, cellStr s
             if err != nil {
                 return 0, err
             }
-            err = DrawChunk(currch, [2]int{chx*CHUNK_SIZE+ceoffX, chy*CHUNK_SIZE+ceoffY}, cellStr)
+            strlen := len([]rune(cellStr))
+            err = DrawChunk(currch, [2]int{chx*CHUNK_SIZE*strlen+ceoffX, chy*CHUNK_SIZE+ceoffY}, cellStr)
             if err != nil {
                 return 0, err
             }
