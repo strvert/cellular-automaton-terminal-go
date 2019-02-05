@@ -3,6 +3,7 @@ package chunkcontroller
 import (
     "errors"
     "fmt"
+    "math/bits"
 
     "../chunk"
 )
@@ -225,5 +226,43 @@ func (cc *Chunkcontroller) NewChunk(x, y int) {
     cc.Chunkset[[2]int{x, y}] = &c
 }
 
+func (cc *Chunkcontroller) CalcNextCellState(cx, cy, x, y int) (int, error) {
+    if x >= CHUNK_SIZE || y >= CHUNK_SIZE || x < 0 || y < 0 {
+        return 0, errors.New("out of chunk")
+    }
+    neighbors, err := cc.GetNeighborhood(cx, cy, x, y)
+    if err != nil {
+        return 0, err
+    }
+    ncount := bits.OnesCount8(neighbors)
+    ch := cc.GetChunk(cx, cy)
+    curr, err := ch.GetCell(x, y)
+    if err != nil {
+        return 0, err
+    }
+
+    if curr == 1 {
+        if ncount == 2 || ncount == 3 {
+            return 1, nil
+        } else {
+            return 0, nil
+        }
+    } else {
+        if ncount == 3 {
+            return 1, nil
+        } else {
+            return 0, nil
+        }
+    }
+    return 0, errors.New("Invalid cell state")
+}
+
 func (cc *Chunkcontroller) UpdateField() {
+    for key, _ := range cc.Chunkset {
+        for y := 0; y < CHUNK_SIZE; y++ {
+            for x := 0; x < CHUNK_SIZE; x++ {
+                neighbor, err := cc.GetNeighborhood(key[0], key[1], y, x)
+            }
+        }
+    }
 }
