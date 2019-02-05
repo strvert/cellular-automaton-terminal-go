@@ -19,27 +19,6 @@ const (
 )
 
 func main() {
-    // init setting
-    cc := cctr.NewChunkcontroller()
-    cc.NewChunk(0, 0)
-
-    cc.SetCell(0, 0, 63, 63, 1, true)
-
-    for i := 0; i < 64; i++ {
-        cc.SetCell(0, 0, 63, i, 1, true)
-        cc.SetCell(0, 0, i, 63, 1, true)
-        cc.SetCell(0, 0, i, 30, 1, true)
-    }
-    cc.SetCell(1, 0, 0, 63, 1, true)
-    bin, err := cc.GetNeighborhood(0, 0, 63, 63)
-    if err != nil {
-        panic(err)
-    }
-    fmt.Println(fmt.Sprintf("%08b\n", bin))
-
-
-    // draw
-    updateInterval := 500
     if err := termbox.Init(); err != nil {
         panic(err)
     }
@@ -47,12 +26,31 @@ func main() {
 
     w, h := termbox.Size()
     field := graphic.ScreenField{w, h, [2]int{0, 0}, [2]int{0, 0}}
+
+    cc := cctr.NewChunkcontroller()
+    field.W, field.H = termbox.Size()
+    field.H -= 5
+    graphic.DrawField(cc, field, CELL_STR)
+
+    for i := 31; i < 64; i++ {
+        cc.SetCell(0, 0, i, 63, 1, true)
+        cc.SetCell(0, 0, 63, i, 1, true)
+    }
+    bin, _ := cc.GetNeighborhood(1, 1, 0, 0)
+    fmt.Println(fmt.Sprintf("%08b\n", bin))
+
+
+    // draw
+    updateInterval := 500
     ticker := time.NewTicker(time.Millisecond * time.Duration(updateInterval))
     updaterFunc := func() {
         for range ticker.C {
             field.W, field.H = termbox.Size()
             field.H -= 5
-            cc.UpdateField()
+            err := cc.UpdateField()
+            if err != nil {
+                panic(err)
+            }
             graphic.DrawField(cc, field, CELL_STR)
         }
     }
