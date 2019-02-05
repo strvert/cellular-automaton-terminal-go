@@ -22,29 +22,22 @@ const (
 func main() {
     // init setting
     cc := cctr.NewChunkcontroller()
-    cc.NewChunk(1, 1)
+    cc.NewChunk(0, 0)
 
-    cc.SetCell(1, 1, 0, 0, 1, true)
-    bin, err := cc.GetNeighborhood(1, 1, 0, 0)
-    if err != nil {
-        fmt.Println(err)
-    }
-    fmt.Println(fmt.Sprintf("%08b\n", bin))
-
-    for i := 0; i < 50; i++ {
+    // cc.SetCell(0, 0, 63, 63, 1, true)
+    for i := 0; i < 63; i++ {
         cc.SetCell(0, 0, i, i, 1, true)
     }
-    bin, err = cc.GetNeighborhood(1, 1, 0, 0)
+    bin, err := cc.GetNeighborhood(62, 62, 0, 0)
     if err != nil {
-        fmt.Println(err)
+        panic(err)
     }
     fmt.Println(fmt.Sprintf("%08b\n", bin))
 
     // draw
     updateInterval := 500
     if err := termbox.Init(); err != nil {
-        fmt.Println(err)
-        os.Exit(1)
+        panic(err)
     }
     defer termbox.Close()
 
@@ -115,7 +108,6 @@ MAINLOOP:
                 cx := (mx/len([]rune(CELL_STR)))
                 graphic.DrawBottomMessage(fmt.Sprintf("%d, %d     ", cx, my), 1, 0)
                 graphic.DrawField(cc, field, CELL_STR)
-                // graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
             }
         }
     }
