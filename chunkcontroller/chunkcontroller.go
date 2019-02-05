@@ -82,6 +82,10 @@ func (cc *Chunkcontroller) SetCell(cx, cy, x, y, v int, aroundgen bool) (error) 
                     cc.NewChunk(cx, cy-1)
                 }
             }
+        } else {
+            if ! cc.CheckChunk(cx, cy) {
+                cc.NewChunk(cx, cy)
+            }
         }
     }
     ch, err := cc.GetChunk(cx, cy, false)
@@ -272,6 +276,7 @@ func (cc *Chunkcontroller) CalcNextCellState(cx, cy, x, y int) (int, error) {
 }
 
 func (cc *Chunkcontroller) UpdateField() (error) {
+    backCC := NewChunkcontroller()
     for key, _ := range cc.Chunkset {
         for y := 0; y < CHUNK_SIZE; y++ {
             for x := 0; x < CHUNK_SIZE; x++ {
@@ -279,9 +284,10 @@ func (cc *Chunkcontroller) UpdateField() (error) {
                 if err != nil {
                     return err
                 }
-                cc.SetCell(key[0], key[1], x, y, v, true)
+                backCC.SetCell(key[0], key[1], x, y, v, true)
             }
         }
     }
+    cc.Chunkset = backCC.Chunkset
     return nil
 }

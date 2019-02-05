@@ -28,6 +28,7 @@ func main() {
     for i := 0; i < 64; i++ {
         cc.SetCell(0, 0, 63, i, 1, true)
         cc.SetCell(0, 0, i, 63, 1, true)
+        cc.SetCell(0, 0, i, 30, 1, true)
     }
     cc.SetCell(1, 0, 0, 63, 1, true)
     bin, err := cc.GetNeighborhood(0, 0, 63, 63)
@@ -36,7 +37,6 @@ func main() {
     }
     fmt.Println(fmt.Sprintf("%08b\n", bin))
 
-    cc.UpdateField()
 
     // draw
     updateInterval := 500
@@ -52,12 +52,12 @@ func main() {
         for range ticker.C {
             field.W, field.H = termbox.Size()
             field.H -= 5
+            cc.UpdateField()
             graphic.DrawField(cc, field, CELL_STR)
         }
     }
 
     graphic.DrawField(cc, field, CELL_STR)
-    //graphic.DrawChunk(&ch, [2]int{ox, oy}, CELL_STR)
     termbox.SetInputMode(termbox.InputEsc | termbox.InputMouse)
 
     runstate := STOP
