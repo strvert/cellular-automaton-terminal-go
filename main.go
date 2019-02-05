@@ -23,11 +23,14 @@ func main() {
     cc := cctr.NewChunkcontroller()
     cc.NewChunk(0, 0)
 
-    // cc.SetCell(0, 0, 63, 63, 1, true)
-    for i := 0; i < 63; i++ {
-        cc.SetCell(0, 0, i, i, 1, true)
+    cc.SetCell(0, 0, 63, 63, 1, true)
+
+    for i := 0; i < 64; i++ {
+        cc.SetCell(0, 0, 63, i, 1, true)
+        cc.SetCell(0, 0, i, 63, 1, true)
     }
-    bin, err := cc.GetNeighborhood(62, 62, 0, 0)
+    cc.SetCell(1, 0, 0, 63, 1, true)
+    bin, err := cc.GetNeighborhood(0, 0, 63, 63)
     if err != nil {
         panic(err)
     }
