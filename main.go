@@ -2,7 +2,6 @@ package main
 
 import (
     "fmt"
-    "os"
     "time"
 
     "github.com/nsf/termbox-go"
