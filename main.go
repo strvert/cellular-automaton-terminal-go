@@ -36,6 +36,8 @@ func main() {
     }
     fmt.Println(fmt.Sprintf("%08b\n", bin))
 
+    cc.UpdateField()
+
     // draw
     updateInterval := 500
     if err := termbox.Init(); err != nil {
