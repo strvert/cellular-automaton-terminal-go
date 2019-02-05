@@ -92,7 +92,7 @@ func (cc *Chunkcontroller) SetCell(cx, cy, x, y, v int, aroundgen bool) (error) 
     return nil
 }
 
-func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
+func (cc *Chunkcontroller) GetNeighborCell(cx, cy, x, y int, coord []int) (int, error) {
     if coord[0] == CHUNK_SIZE || coord[1] == CHUNK_SIZE || coord[0] == -1 || coord[1] == -1 {
         if coord[0] == CHUNK_SIZE && coord[1] == -1 {
             aroundch, err := cc.GetChunk(cx+1, cy-1, false)
@@ -103,7 +103,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("1: (%d, %d) (%d, %d)\n", cx+1, cy-1, 0, CHUNK_SIZE-1)
+            //fmt.Printf("1: (%d, %d) (%d, %d)\n", cx+1, cy-1, 0, CHUNK_SIZE-1)
             return cell, nil
         } else if coord[0] == CHUNK_SIZE && coord[1] == CHUNK_SIZE {
             aroundch, err := cc.GetChunk(cx+1, cy+1, false)
@@ -114,7 +114,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("2: (%d, %d) (%d, %d)\n", cx+1, cy+1, 0, 0)
+            //fmt.Printf("2: (%d, %d) (%d, %d)\n", cx+1, cy+1, 0, 0)
             return cell, nil
         } else if coord[1] == CHUNK_SIZE && coord[0] == -1 {
             aroundch, err := cc.GetChunk(cx-1, cy+1, false)
@@ -125,7 +125,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("3: (%d, %d) (%d, %d)\n", cx-1, cy+1, CHUNK_SIZE-1, 0)
+            //fmt.Printf("3: (%d, %d) (%d, %d)\n", cx-1, cy+1, CHUNK_SIZE-1, 0)
             return cell, nil
         } else if coord[0] == -1 && coord[1] == -1 {
             aroundch, err := cc.GetChunk(cx-1, cy-1, false)
@@ -133,11 +133,10 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
                 return 0, err
             }
             cell, err := aroundch.GetCell(CHUNK_SIZE-1, CHUNK_SIZE-1)
-            fmt.Println(cell)
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("4: (%d, %d) (%d, %d)\n", cx-1, cy-1, CHUNK_SIZE-1, CHUNK_SIZE-1)
+            //fmt.Printf("4: (%d, %d) (%d, %d)\n", cx-1, cy-1, CHUNK_SIZE-1, CHUNK_SIZE-1)
             return cell, nil
         }else if coord[0] == CHUNK_SIZE {
             aroundch, err := cc.GetChunk(cx+1, cy, false)
@@ -148,7 +147,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("5: (%d, %d) (%d, %d)\n", cx+1, cy, 0, y)
+            //fmt.Printf("5: (%d, %d) (%d, %d)\n", cx+1, cy, 0, y)
             return cell, nil
         } else if coord[1] == CHUNK_SIZE {
             aroundch, err := cc.GetChunk(cx, cy+1, false)
@@ -159,7 +158,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("6: (%d, %d) (%d, %d)\n", cx+1, cy, x, 0)
+            //fmt.Printf("6: (%d, %d) (%d, %d)\n", cx+1, cy, x, 0)
             return cell, nil
         } else if coord[0] == -1 {
             aroundch, err := cc.GetChunk(cx-1, cy, false)
@@ -170,7 +169,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("7: (%d, %d) (%d, %d)\n", cx+1, cy, CHUNK_SIZE-1, y)
+            //fmt.Printf("7: (%d, %d) (%d, %d)\n", cx+1, cy, CHUNK_SIZE-1, y)
             return cell, nil
         } else if coord[1] == -1 {
             aroundch, err := cc.GetChunk(cx, cy-1, false)
@@ -181,7 +180,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
             if err != nil {
                 return 0, err
             }
-            fmt.Printf("8: (%d, %d) (%d, %d)\n", cx+1, cy, x, CHUNK_SIZE-1)
+            //fmt.Printf("8: (%d, %d) (%d, %d)\n", cx+1, cy, x, CHUNK_SIZE-1)
             return cell, nil
         }
     } else {
@@ -193,7 +192,7 @@ func (cc *Chunkcontroller) GetCell(cx, cy, x, y int, coord []int) (int, error) {
         if err != nil {
             return 0, err
         }
-        fmt.Printf("0: (%d, %d) (%d, %d)\n", cx, cy, coord[0], coord[1])
+        //fmt.Printf("0: (%d, %d) (%d, %d)\n", cx, cy, coord[0], coord[1])
         return cell, nil
     }
     return 0, errors.New("Unknow error")
@@ -203,9 +202,8 @@ func (cc *Chunkcontroller) GetNeighborhood(cx, cy, x, y int) (byte, error) {
     coords := [][]int{{x, y-1}, {x+1, y-1}, {x+1, y}, {x+1, y+1}, {x, y+1}, {x-1, y+1}, {x-1, y}, {x-1, y-1}}
 
     var neighbors byte = byte(0)
-
     for i, coord := range coords {
-        cell, err := cc.GetCell(cx, cy, x, y, coord)
+        cell, err := cc.GetNeighborCell(cx, cy, x, y, coord)
         if err != nil {
             return byte(0), err
         }
@@ -227,6 +225,5 @@ func (cc *Chunkcontroller) NewChunk(x, y int) {
     cc.Chunkset[[2]int{x, y}] = &c
 }
 
-func (CC *Chunkcontroller) UpdateField() {
-
+func (cc *Chunkcontroller) UpdateField() {
 }
