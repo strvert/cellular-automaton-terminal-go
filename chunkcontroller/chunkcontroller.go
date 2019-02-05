@@ -94,6 +94,18 @@ func (cc *Chunkcontroller) SetCell(cx, cy, x, y, v int, aroundgen bool) (error) 
 
 func (cc *Chunkcontroller) GetNeighborCell(cx, cy, x, y int, coord []int) (int, error) {
     if coord[0] == CHUNK_SIZE || coord[1] == CHUNK_SIZE || coord[0] == -1 || coord[1] == -1 {
+        ch, err := cc.GetChunk(cx, cy, false)
+        if err != nil {
+            return 0, err
+        }
+        v, err := ch.GetCell(x, y)
+        if err != nil {
+            return 0, err
+        }
+        if v == 0 {
+            return 0, nil
+        }
+
         if coord[0] == CHUNK_SIZE && coord[1] == -1 {
             aroundch, err := cc.GetChunk(cx+1, cy-1, false)
             if err != nil {
@@ -263,7 +275,11 @@ func (cc *Chunkcontroller) UpdateField() (error) {
     for key, _ := range cc.Chunkset {
         for y := 0; y < CHUNK_SIZE; y++ {
             for x := 0; x < CHUNK_SIZE; x++ {
-                key = key
+                v, err := cc.CalcNextCellState(key[0], key[1], x, y)
+                if err != nil {
+                    return err
+                }
+                cc.SetCell(key[0], key[1], x, y, v, true)
             }
         }
     }
